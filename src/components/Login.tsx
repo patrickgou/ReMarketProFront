@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react';
 
 export default function Login() {
-  const [userName, setUserName] = useState('');
-  useEffect(() => {
-    fetch('http://localhost:5150')
-      .then((userName) => userName.json())
-      .then((userName) => {
-        setUserName(userName);
-      });
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const fetchLogin = async () => {
+    // fetch login, body com email e password
+    const response = await fetch('http://localhost:5150/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    console.log(data);
+  };
+
   return (
     <div className="flex justify-center items-center">
       <div
@@ -20,11 +28,11 @@ export default function Login() {
           <input
             className="w-full rounded-lg 
             px-4 py-4 mb-2 border-2 border-indigo-600"
-            type="text"
+            type="email"
             placeholder="UserName"
-            minLength={8}
-            maxLength={12}
             aria-label="UserName"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             className="w-full 
@@ -32,9 +40,9 @@ export default function Login() {
             border-2 border-indigo-600"
             type="password"
             placeholder="Password"
-            minLength={8}
-            maxLength={16}
             aria-label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </form>
         <button
@@ -43,7 +51,8 @@ export default function Login() {
            bg-gray-900 rounded-xl
             hover:bg-gray-700 focus:outline-none 
             focus:ring-2 focus:ring-gray-500"
-          type="submit"
+          type="button"
+          onClick={fetchLogin}
         >
           Entrar
         </button>
