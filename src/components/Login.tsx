@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   const fetchLogin = async () => {
     // fetch login, body com email e password
-    const response = await fetch('http://localhost:5150/api/auth/login', {
+    const response = await fetch('https://johandler.fly.dev/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -14,7 +16,12 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
-    console.log(data);
+    if (data.token) {
+      localStorage.setItem('infos', JSON.stringify(data));
+      router.push('/dashboard');
+    } else {
+      localStorage.removeItem('infos');
+    }
   };
 
   return (
